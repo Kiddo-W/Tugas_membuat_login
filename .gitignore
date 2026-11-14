@@ -1,0 +1,21 @@
+# 1. File konfigurasi database (PENTING untuk keamanan)
+koneksi.php
+.env
+
+# 2. Folder dependensi (jika nanti pakai Composer atau NPM)
+/vendor/
+/node_modules/
+
+# 3. File bawaan editor / IDE
+.vscode/
+.idea/
+*.sublime-workspace
+
+# 4. File sampah sistem operasi (Windows & Mac)
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# 5. File log error
+*.log
+error_log
