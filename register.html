@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daftar Akun</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="register.css">
+</head>
+
+<body>
+
+    <div class="auth-container">
+        <div class="auth-header">
+            <h1>Buat akun</h1>
+            <p>Daftar untuk membuat akun anda</p>
+        </div>
+
+        <div class="error-message" id="errorBox">
+            <i class="fas fa-exclamation-circle"></i>
+            <span id="errorText">Konfirmasi password atau username tidak cocok. Silakan coba lagi.</span>
+        </div>
+
+        <form class="auth-form" method="POST" action="" onsubmit="return cekPassword()">
+            <!-- Input Username -->
+            <div class="form-group">
+                <label for="username">Username</label>
+                <div class="input-wrapper">
+                    <input type="text" id="username" name="username" class="form-control"
+                        placeholder="Masukkan username" required>
+                </div>
+            </div>
+
+            <!-- Input Password -->
+            <div class="form-group">
+                <label for="password">Password</label>
+                <div class="input-wrapper">
+                    <input type="password" id="password" name="password" class="form-control"
+                        placeholder="Masukkan password" required>
+                    <button type="button" class="toggle-password" onclick="togglePassword('password', this)"
+                        aria-label="Tampilkan password">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Input Konfirmasi Password -->
+            <div class="form-group">
+                <label for="confirm_password">Konfirmasi Password</label>
+                <div class="input-wrapper">
+                    <input type="password" id="confirm_password" name="confirm_password" class="form-control"
+                        placeholder="Konfirmasi password" required>
+                    <button type="button" class="toggle-password" onclick="togglePassword('confirm_password', this)"
+                        aria-label="Tampilkan konfirmasi password">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Tombol Submit -->
+            <button type="submit" class="btn-primary">Daftar</button>
+        </form>
+
+        <!-- Bagian Bawah -->
+        <div class="divider">
+            <span>Sudah punya akun?</span>
+        </div>
+        <a href="login.php" class="btn-secondary">Masuk</a>
+    </div>
+
+    <script>
+        // Fungsi tombol eye password
+        function togglePassword(inputId, button) {
+            const pwInput = document.getElementById(inputId);
+            const icon = button.querySelector('i');
+            if (pwInput.type === "password") {
+                pwInput.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                pwInput.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
+
+        // Validasi konfirmasi password
+        function cekPassword() {
+            const pass = document.getElementById('password').value;
+            const confirmPass = document.getElementById('confirm_password').value;
+            const errorBox = document.getElementById('errorBox');
+
+            if (pass !== confirmPass) {
+                errorBox.style.display = 'flex';
+                return false;
+            }
+            errorBox.style.display = 'none';
+            return true;
+        }
+    </script>
+</body>
+
+</html>
