@@ -1,6 +1,40 @@
+<?php
+session_start();
+require 'koneksi.php';
+
+if (isset($_SESSION['username'])) {
+    header("Location: halaman_utama.php");
+    exit;
+}
+
+$error = "";
+$username = "";
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $username = trim($_POST['username'] ?? '');
+    $password = $_POST['password'] ?? '';
+
+    $stmt = mysqli_prepare($conn, "SELECT username, password FROM users WHERE username = ?");
+    mysqli_stmt_bind_param($stmt, "s", $username);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+
+    if ($user = mysqli_fetch_assoc($result)) {
+        if (password_verify($password, $user['password'])) {
+            $_SESSION['username'] = $user['username'];
+            header("Location: halaman_utama.php");
+            exit;
+        } else {
+            $error = "Username atau password salah. Silakan coba lagi.";
+        }
+    } else {
+        $error = "Username atau password salah. Silakan coba lagi.";
+    }
+    mysqli_stmt_close($stmt);
+}
+?>
 <!DOCTYPE html>
 <html lang="id">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,7 +42,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="register.css">
 </head>
-
 <body>
 
     <div class="auth-container">
@@ -17,47 +50,39 @@
             <p>Masuk untuk melanjutkan ke akun anda</p>
         </div>
 
-        <div class="error-message" id="errorBox">
+        <div class="error-message" id="errorBox" style="<?php echo ($error !== '') ? 'display: flex;' : ''; ?>">
             <i class="fas fa-exclamation-circle"></i>
-            <span id="errorText">Konfirmasi password atau username tidak cocok. Silakan coba lagi.</span>
+            <span id="errorText"><?php echo htmlspecialchars($error); ?></span>
         </div>
 
         <form class="auth-form" method="POST" action="">
-            <!-- Input Username -->
             <div class="form-group">
                 <label for="username">Username</label>
                 <div class="input-wrapper">
-                    <input type="text" id="username" name="username" class="form-control"
-                        placeholder="Masukkan username" required>
+                    <input type="text" id="username" name="username" class="form-control" maxlength="16" placeholder="Masukkan username" required>
                 </div>
             </div>
 
-            <!-- Input Password -->
             <div class="form-group">
                 <label for="password">Password</label>
                 <div class="input-wrapper">
-                    <input type="password" id="password" name="password" class="form-control"
-                        placeholder="Masukkan password" required>
-                    <button type="button" class="toggle-password" onclick="togglePassword('password', this)"
-                        aria-label="Tampilkan password">
+                    <input type="password" id="password" name="password" class="form-control" minlength="8" maxlength="8" placeholder="Masukkan password" required>
+                    <button type="button" class="toggle-password" onclick="togglePassword('password', this)" aria-label="Tampilkan password">
                         <i class="fas fa-eye"></i>
                     </button>
                 </div>
             </div>
 
-            <!-- Tombol Submit -->
             <button type="submit" class="btn-primary">Masuk</button>
         </form>
 
-        <!-- Bagian Bawah -->
         <div class="divider">
             <span>Belum punya akun?</span>
         </div>
-        <a href="register.html" class="btn-secondary">Daftar</a>
+        <a href="register.php" class="btn-secondary">Daftar</a>
     </div>
 
     <script>
-        // Fungsi tombol eye password
         function togglePassword(inputId, button) {
             const pwInput = document.getElementById(inputId);
             const icon = button.querySelector('i');
@@ -71,8 +96,6 @@
                 icon.classList.add('fa-eye');
             }
         }
-
     </script>
 </body>
-
 </html>
