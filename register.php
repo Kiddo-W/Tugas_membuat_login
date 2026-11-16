@@ -11,8 +11,8 @@ if (isset($_SESSION['username'])) {
 $error = "";
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $username = trim($_POST['username'] ?? '');
-    $password = $_POST['password'] ?? '';
+    $username         = trim($_POST['username'] ?? '');
+    $password         = $_POST['password'] ?? '';
     $confirm_password = $_POST['confirm_password'] ?? '';
 
     if ($username === '' || $password === '') {
@@ -20,12 +20,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } elseif ($password !== $confirm_password) {
         $error = "Konfirmasi password tidak cocok. Silakan coba lagi.";
     } else {
-        // Enkripsi password
-        $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-
-        // Simpan ke database (menggunakan struktur tabelmu: username & password)
+        // Simpan ke database menggunakan variabel $password (bukan $hashed_password)
         $stmt = mysqli_prepare($conn, "INSERT INTO users (username, password) VALUES (?, ?)");
-        mysqli_stmt_bind_param($stmt, "ss", $username, $hashed_password);
+        mysqli_stmt_bind_param($stmt, "ss", $username, $password);
 
         try {
             mysqli_stmt_execute($stmt);
@@ -108,7 +105,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="divider">
             <span>Sudah punya akun?</span>
         </div>
-        <!-- Diubah dari login.html ke login.php -->
         <a href="login.php" class="btn-secondary">Masuk</a>
     </div>
 

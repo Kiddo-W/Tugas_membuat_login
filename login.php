@@ -20,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $result = mysqli_stmt_get_result($stmt);
 
     if ($user = mysqli_fetch_assoc($result)) {
-        if (password_verify($password, $user['password'])) {
+        if ($password === $user['password']) {
             $_SESSION['username'] = $user['username'];
             header("Location: halaman_utama.php");
             exit;
